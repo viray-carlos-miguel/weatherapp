@@ -17,10 +17,10 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.3'  # Ensure correct version
+          flutter-version: '3.29.2'  # Ensures Dart 3.7.0+
 
-      - name: Verify Flutter Version
-        run: flutter --version  # Debugging step to confirm installation
+      - name: Verify Dart Version
+        run: dart --version  # Debugging step
 
       - name: Install Dependencies
         run: flutter pub get
