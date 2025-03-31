@@ -22,6 +22,9 @@ jobs:
       - name: Install Dependencies
         run: flutter pub get
 
+      - name: Clean Project (Optional)
+        run: flutter clean  # Removes old builds and cached data
+
       - name: Decode Keystore
         run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/upload-keystore.jks
 
@@ -39,7 +42,7 @@ jobs:
         run: flutter build appbundle --release
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4  # Updated to v4 to fix error
         with:
           name: release-build
           path: |
@@ -62,7 +65,7 @@ jobs:
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJson: android/play-store.json
-          packageName: com.yourcompany.yourapp
+          packageName: com.yourcompany.yourapp  # Update with your actual package name
           releaseFiles: build/app/outputs/bundle/release/app-release.aab
           track: production
           status: completed
