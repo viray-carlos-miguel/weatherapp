@@ -17,26 +17,13 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'stable'  # Ensures the latest Dart version is installed
+          flutter-version: '3.19.3'  # Ensure correct version
 
-      - name: Verify Dart Version
-        run: dart --version  # Debugging step to check installed Dart version
+      - name: Verify Flutter Version
+        run: flutter --version  # Debugging step to confirm installation
 
       - name: Install Dependencies
         run: flutter pub get
-
-      - name: Clean Project (Optional)
-        run: flutter clean  # Clears old build caches
-
-      - name: Decode Keystore
-        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/upload-keystore.jks
-
-      - name: Setup Keystore
-        run: |
-          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" > android/key.properties
-          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
-          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
-          echo "storeFile=android/app/upload-keystore.jks" >> android/key.properties
 
       - name: Build APK
         run: flutter build apk --release
@@ -51,24 +38,3 @@ jobs:
           path: |
             build/app/outputs/flutter-apk/app-release.apk
             build/app/outputs/bundle/release/app-release.aab
-
-  deploy:
-    name: Deploy to Google Play Store
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-
-      - name: Decode Google Play JSON
-        run: echo "${{ secrets.PLAY_STORE_JSON }}" | base64 --decode > android/play-store.json
-
-      - name: Upload AAB to Play Store
-        uses: r0adkll/upload-google-play@v1
-        with:
-          serviceAccountJson: android/play-store.json
-          packageName: com.yourcompany.yourapp
-          releaseFiles: build/app/outputs/bundle/release/app-release.aab
-          track: production
-          status: completed
