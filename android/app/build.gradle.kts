@@ -6,12 +6,12 @@ plugins {
 
 android {
     namespace = "com.example.weatherapp"
-    compileSdk = 34  // Update as needed
-    ndkVersion = "25.1.8937393"  // Replace with actual NDK version
+    compileSdk = 34
+    ndkVersion = "25.1.8937393"
 
     signingConfigs {
         create("release") {
-            storeFile = file("../upload-keystore.jks")  // Correct path to keystore
+            storeFile = file("../upload-keystore.jks")
             storePassword = project.findProperty("storePassword") as String? ?: ""
             keyAlias = project.findProperty("keyAlias") as String? ?: ""
             keyPassword = project.findProperty("keyPassword") as String? ?: ""
@@ -20,7 +20,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.weatherapp"
-        minSdk = 21  // Replace with actual minSdkVersion
+        minSdk = 21
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -38,7 +38,9 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            signingConfig = signingConfigs.getByName("release")  // Correct release signing
+            isShrinkResources = false  // Ensure no shrinking errors
+            signingConfig = signingConfigs.getByName("release")
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
 }
