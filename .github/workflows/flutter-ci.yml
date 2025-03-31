@@ -1,50 +1,37 @@
-name: Build & Deploy Flutter App
+name: Flutter CI/CD
 
 on:
   push:
     branches:
-      - main
+      - main  # Change to your main branch
 
 jobs:
   build:
-    name: Build Release APK & AAB
+    name: Build & Test Flutter App
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.29.2'  # Ensures Dart 3.7.0+
-
-      - name: Verify Dart Version
-        run: dart --version  # Debugging step
+          flutter-version: 3.x  # Change to your Flutter version
 
       - name: Install Dependencies
         run: flutter pub get
 
-      - name: Decode Keystore
-        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/upload-keystore.jks
+      - name: Run Tests
+        run: flutter test
 
-      - name: Setup Keystore
+      - name: Build APK & App Bundle
         run: |
-          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" > android/key.properties
-          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
-          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
-          echo "storeFile=upload-keystore.jks" >> android/key.properties
+          flutter build apk --release
+          flutter build appbundle --release
 
-      - name: Build APK
-        run: flutter build apk --release
-
-      - name: Build AAB
-        run: flutter build appbundle --release
-
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
+      - name: Upload APK & AAB as Artifacts
+        uses: actions/upload-artifact@v3
         with:
-          name: release-build
-          path: |
-            build/app/outputs/flutter-apk/app-release.apk
-            build/app/outputs/bundle/release/app-release.aab
+          name: Flutter-Build
+          path: build/app/outputs/flutter-apk/app-release.apk

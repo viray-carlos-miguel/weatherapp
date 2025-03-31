@@ -5,17 +5,21 @@ plugins {
 }
 
 android {
-    namespace = "com.example.weatherapp"
-    compileSdk = 34
-    ndkVersion = "25.1.8937393"
-
     signingConfigs {
         create("release") {
-            storeFile = file("../upload-keystore.jks")
-            storePassword = project.findProperty("storePassword") as String? ?: ""
-            keyAlias = project.findProperty("keyAlias") as String? ?: ""
-            keyPassword = project.findProperty("keyPassword") as String? ?: ""
+            storeFile = file(System.getenv("KEYSTORE_PATH") ?: "upload-keystore.jks")
+            storePassword = System.getenv("KEYSTORE_PASSWORD") ?: ""
+            keyAlias = System.getenv("KEY_ALIAS") ?: ""
+            keyPassword = System.getenv("KEY_PASSWORD") ?: ""
         }
+    }
+
+    buildTypes {
+        release {
+            isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("release")
+        }
+    }
     }
 
     defaultConfig {
