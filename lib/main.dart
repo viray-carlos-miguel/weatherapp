@@ -102,7 +102,7 @@ try {
         child: SafeArea(child: temp != "" ?Center(
           child: Column(
             children: [
-              SizedBox(height: 50,),
+              SizedBox(height: 49,),
               Text('My Location',style: TextStyle(fontSize: 35),),
               SizedBox(height: 5,),
               Text('$location'),
