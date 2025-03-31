@@ -6,6 +6,19 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        release {
+            storeFile file("../upload-keystore.jks")
+            storePassword project.property("storePassword")
+            keyAlias project.property("keyAlias")
+            keyPassword project.property("keyPassword")
+        }
+    }
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+        }
+    }
     namespace = "com.example.weatherapp"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
