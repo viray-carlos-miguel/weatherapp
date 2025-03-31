@@ -17,13 +17,16 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 3.16.0
+          flutter-version: 'stable'  # Ensures the latest Dart version is installed
+
+      - name: Verify Dart Version
+        run: dart --version  # Debugging step to check installed Dart version
 
       - name: Install Dependencies
         run: flutter pub get
 
       - name: Clean Project (Optional)
-        run: flutter clean  # Removes old builds and cached data
+        run: flutter clean  # Clears old build caches
 
       - name: Decode Keystore
         run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/upload-keystore.jks
@@ -42,7 +45,7 @@ jobs:
         run: flutter build appbundle --release
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v4  # Updated to v4 to fix error
+        uses: actions/upload-artifact@v4
         with:
           name: release-build
           path: |
@@ -65,7 +68,7 @@ jobs:
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJson: android/play-store.json
-          packageName: com.yourcompany.yourapp  # Update with your actual package name
+          packageName: com.yourcompany.yourapp
           releaseFiles: build/app/outputs/bundle/release/app-release.aab
           track: production
           status: completed
