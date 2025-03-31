@@ -1,29 +1,30 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
-    id("dev.flutter.flutter-gradle-plugin")
+    id("dev.flutter.flutter-gradle-plugin") // Ensure Flutter Gradle plugin is applied last
 }
 
 android {
+    namespace = "com.example.weatherapp"
+    compileSdk = 34  // Update as needed
+    ndkVersion = "25.1.8937393"  // Replace with actual NDK version
+
     signingConfigs {
         create("release") {
-            storeFile = file("android/upload-keystore.jks")
+            storeFile = file("../upload-keystore.jks")  // Correct path to keystore
             storePassword = project.findProperty("storePassword") as String? ?: ""
             keyAlias = project.findProperty("keyAlias") as String? ?: ""
             keyPassword = project.findProperty("keyPassword") as String? ?: ""
         }
     }
 
-    buildTypes {
-        release {
-            signingConfig = signingConfigs.getByName("release")
-        }
+    defaultConfig {
+        applicationId = "com.example.weatherapp"
+        minSdk = 21  // Replace with actual minSdkVersion
+        targetSdk = 34
+        versionCode = 1
+        versionName = "1.0"
     }
-    }
-    namespace = "com.example.weatherapp"
-    compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -31,25 +32,13 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
-    }
-
-    defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.weatherapp"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
+        jvmTarget = "11"
     }
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("release")  // Correct release signing
         }
     }
 }
