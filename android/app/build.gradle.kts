@@ -7,17 +7,19 @@ plugins {
 
 android {
     signingConfigs {
-        release {
-            storeFile file("../upload-keystore.jks")
-            storePassword project.property("storePassword")
-            keyAlias project.property("keyAlias")
-            keyPassword project.property("keyPassword")
+        create("release") {
+            storeFile = file("android/upload-keystore.jks")
+            storePassword = project.findProperty("storePassword") as String? ?: ""
+            keyAlias = project.findProperty("keyAlias") as String? ?: ""
+            keyPassword = project.findProperty("keyPassword") as String? ?: ""
         }
     }
+
     buildTypes {
         release {
-            signingConfig signingConfigs.release
+            signingConfig = signingConfigs.getByName("release")
         }
+    }
     }
     namespace = "com.example.weatherapp"
     compileSdk = flutter.compileSdkVersion
